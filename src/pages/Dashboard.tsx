@@ -1,11 +1,11 @@
-
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Search, Settings, LayoutDashboard, Inbox, Calendar, Star, CheckSquare, Hash } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Search, Settings, LayoutDashboard, Inbox, Calendar, Star, CheckSquare, Hash, LogOut } from 'lucide-react';
 import { Task, Project } from '../types';
 import Sidebar from '../components/Sidebar';
 import TaskItem from '../components/TaskItem';
 import AddTaskModal from '../components/AddTaskModal';
+import { useToast } from '../hooks/use-toast';
 
 const Dashboard: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([
@@ -36,16 +36,16 @@ const Dashboard: React.FC = () => {
   const [showTaskMenu, setShowTaskMenu] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Calculate completed tasks
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const completedTasksCount = tasks.filter(task => task.completed).length;
   const totalTasksCount = tasks.length;
   const uncompletedTasksCount = totalTasksCount - completedTasksCount;
 
-  // Filter tasks based on active tab
   const getFilteredTasks = () => {
     let filtered = tasks;
     
-    // Apply search filter if there's a query
     if (searchQuery) {
       filtered = filtered.filter(task => 
         task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -55,7 +55,6 @@ const Dashboard: React.FC = () => {
       );
     }
     
-    // Apply tab filter
     switch (activeTab) {
       case 'inbox':
         return filtered;
@@ -64,7 +63,6 @@ const Dashboard: React.FC = () => {
       case 'completed':
         return filtered.filter(task => task.completed);
       case 'important':
-        // For demo purposes, let's consider tasks with 'School' tag as important
         return filtered.filter(task => task.tag === 'School');
       default:
         if (activeTab.startsWith('project-')) {
@@ -75,7 +73,6 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  // Add new task
   const handleAddTask = () => {
     if (newTask.title.trim() === '') return;
     
@@ -91,7 +88,6 @@ const Dashboard: React.FC = () => {
     
     setTasks([...tasks, newTaskItem]);
     
-    // Update project count
     if (newTask.project) {
       setProjects(projects.map(project => 
         project.id === newTask.project 
@@ -100,7 +96,6 @@ const Dashboard: React.FC = () => {
       ));
     }
     
-    // Reset form
     setNewTask({
       title: '',
       location: '',
@@ -111,7 +106,6 @@ const Dashboard: React.FC = () => {
     setShowAddTaskModal(false);
   };
 
-  // Toggle task completion
   const toggleTaskCompletion = (id: string) => {
     setTasks(tasks.map(task => 
       task.id === id 
@@ -120,12 +114,10 @@ const Dashboard: React.FC = () => {
     ));
   };
 
-  // Delete task
   const deleteTask = (id: string) => {
     const taskToDelete = tasks.find(task => task.id === id);
     setTasks(tasks.filter(task => task.id !== id));
     
-    // Update project count
     if (taskToDelete?.project) {
       setProjects(projects.map(project => 
         project.id === taskToDelete.project 
@@ -137,7 +129,6 @@ const Dashboard: React.FC = () => {
     setShowTaskMenu(null);
   };
 
-  // Get tab title
   const getTabTitle = () => {
     switch (activeTab) {
       case 'inbox':
@@ -160,7 +151,6 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  // Get tab icon
   const getTabIcon = () => {
     switch (activeTab) {
       case 'inbox':
@@ -181,9 +171,19 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleLogout = () => {
+    toast({
+      title: "Logging out",
+      description: "You have been successfully logged out",
+    });
+    
+    setTimeout(() => {
+      navigate('/login');
+    }, 1000);
+  };
+
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
       <Sidebar 
         projects={projects}
         activeTab={activeTab}
@@ -194,9 +194,7 @@ const Dashboard: React.FC = () => {
         uncompletedTasksCount={uncompletedTasksCount}
       />
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col bg-white">
-        {/* Header */}
         <header className="border-b p-4 flex justify-between items-center bg-white">
           <div className="relative w-full max-w-md">
             <input
@@ -208,14 +206,21 @@ const Dashboard: React.FC = () => {
             />
             <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
           </div>
-          <Link to="/settings">
-            <button className="ml-4 text-gray-500 hover:text-gray-700 transition-colors">
-              <Settings size={20} />
+          <div className="flex items-center">
+            <button 
+              className="ml-4 text-gray-500 hover:text-gray-700 transition-colors"
+              onClick={handleLogout}
+            >
+              <LogOut size={20} />
             </button>
-          </Link>
+            <Link to="/settings">
+              <button className="ml-4 text-gray-500 hover:text-gray-700 transition-colors">
+                <Settings size={20} />
+              </button>
+            </Link>
+          </div>
         </header>
 
-        {/* Content */}
         <main className="flex-1 overflow-auto p-6 bg-gray-50">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-2xl font-bold mb-1">{getTabTitle()}</h1>
@@ -246,7 +251,6 @@ const Dashboard: React.FC = () => {
         </main>
       </div>
 
-      {/* Add Task Modal */}
       {showAddTaskModal && (
         <AddTaskModal 
           newTask={newTask}

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Inbox, 
   LayoutDashboard, 
@@ -10,7 +10,8 @@ import {
   Hash, 
   Menu, 
   Plus, 
-  ChevronDown 
+  ChevronDown,
+  LogOut
 } from 'lucide-react';
 import { Project } from '../types';
 
