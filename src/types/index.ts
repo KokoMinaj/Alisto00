@@ -14,3 +14,14 @@ export interface Project {
   name: string;
   count: number;
 }
+
+export interface UserProfile {
+  username: string;
+  email: string;
+  avatar?: string;
+  preferences: {
+    darkMode: boolean;
+    emailNotifications: boolean;
+    soundEffects: boolean;
+  }
+}
