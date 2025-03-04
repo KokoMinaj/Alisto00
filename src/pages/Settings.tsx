@@ -51,11 +51,6 @@ const Settings: React.FC = () => {
             <h1 className="text-2xl font-bold">Settings</h1>
           </div>
           <div className="relative">
-            <input
-              type="text"
-              placeholder="Search settings..."
-              className="pl-3 pr-10 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
           </div>
         </div>
       </header>
