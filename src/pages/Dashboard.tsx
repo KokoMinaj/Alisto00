@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Task, Project } from '../types';
 import Sidebar from '../components/Sidebar';
@@ -7,22 +6,13 @@ import DashboardHeader from '../components/dashboard/DashboardHeader';
 import TaskList from '../components/dashboard/TaskList';
 
 const Dashboard: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: '1', title: 'Buy Cat Food', location: 'Loc: Consolacion', tag: 'Home', completed: false, project: 'home', dueDate: new Date(Date.now() + 86400000) }, // Tomorrow
-    { id: '2', title: 'Visit Mr. DIY Ayala', category: 'Home Supplies', tag: 'Home', completed: false, project: 'home', dueDate: new Date(Date.now() + 172800000) }, // Day after tomorrow
-    { id: '3', title: 'Review CAO', category: 'Long Quiz F2F', tag: 'School', completed: false, project: 'school', dueDate: new Date(Date.now() + 345600000) }, // 4 days from now
-    { id: '4', title: 'Article(s) for Algo 2', category: 'Long Quiz F2F', tag: 'School', completed: false, project: 'school' },
-    { id: '5', title: 'Call John', tag: 'Friends', completed: false, project: 'friends', dueDate: new Date(Date.now() + 86400000) }, // Tomorrow
-    { id: '6', title: 'Check emails', tag: 'Random', completed: false, project: 'random' },
-  ]);
-
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [projects, setProjects] = useState<Project[]>([
-    { id: 'school', name: 'School', count: 2 },
-    { id: 'home', name: 'Home', count: 2 },
-    { id: 'random', name: 'Random', count: 1 },
-    { id: 'friends', name: 'Friends', count: 1 },
+    { id: 'school', name: 'School', count: 0 },
+    { id: 'home', name: 'Home', count: 0 },
+    { id: 'random', name: 'Random', count: 0 },
+    { id: 'friends', name: 'Friends', count: 0 },
   ]);
-
   const [activeTab, setActiveTab] = useState('today');
   const [newTask, setNewTask] = useState({
     title: '',
@@ -40,67 +30,36 @@ const Dashboard: React.FC = () => {
   const completedTasksCount = tasks.filter(task => task.completed).length;
   const totalTasksCount = tasks.length;
   const uncompletedTasksCount = totalTasksCount - completedTasksCount;
-  
-  // Get upcoming tasks count (tasks with due dates in the next 7 days)
-  const upcomingTasksCount = tasks.filter(task => {
-    if (!task.dueDate) return false;
-    
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    const dueDate = new Date(task.dueDate);
-    dueDate.setHours(0, 0, 0, 0);
-    
-    const diffTime = dueDate.getTime() - today.getTime();
-    const diffDays = diffTime / (1000 * 60 * 60 * 24);
-    
-    return diffDays > 0 && diffDays <= 7 && !task.completed;
-  }).length;
+  const upcomingTasksCount = tasks.filter(task => task.dueDate && new Date(task.dueDate).getTime() > Date.now() && !task.completed).length;
+
+  const updateProjectCounts = (updatedTasks: Task[]) => {
+    const projectCounts: { [key: string]: number } = {};
+    updatedTasks.forEach(task => {
+      if (task.project) {
+        projectCounts[task.project] = (projectCounts[task.project] || 0) + 1;
+      }
+    });
+    setProjects(projects.map(project => ({
+      ...project,
+      count: projectCounts[project.id] || 0
+    })));
+  };
 
   const getFilteredTasks = () => {
-    let filtered = tasks;
-    
-    if (searchQuery) {
-      filtered = filtered.filter(task => 
-        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (task.location && task.location.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (task.category && task.category.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (task.tag && task.tag.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-    }
-    
+    let filtered = tasks.filter(task => 
+      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (task.location && task.location.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (task.category && task.category.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (task.tag && task.tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+
     switch (activeTab) {
       case 'inbox':
         return filtered;
-      case 'today': {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        return filtered.filter(task => {
-          if (!task.dueDate) return false;
-          
-          const dueDate = new Date(task.dueDate);
-          dueDate.setHours(0, 0, 0, 0);
-          
-          return dueDate.getTime() === today.getTime();
-        });
-      }
-      case 'upcoming': {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        return filtered.filter(task => {
-          if (!task.dueDate) return false;
-          
-          const dueDate = new Date(task.dueDate);
-          dueDate.setHours(0, 0, 0, 0);
-          
-          const diffTime = dueDate.getTime() - today.getTime();
-          const diffDays = diffTime / (1000 * 60 * 60 * 24);
-          
-          return diffDays > 0 && diffDays <= 7;
-        });
-      }
+      case 'today':
+        return filtered.filter(task => task.dueDate && new Date(task.dueDate).toDateString() === new Date().toDateString());
+      case 'upcoming':
+        return filtered.filter(task => task.dueDate && new Date(task.dueDate).getTime() > Date.now());
       case 'completed':
         return filtered.filter(task => task.completed);
       case 'important':
@@ -116,61 +75,24 @@ const Dashboard: React.FC = () => {
 
   const handleAddTask = () => {
     if (newTask.title.trim() === '') return;
-    
-    const newTaskItem: Task = {
-      id: Date.now().toString(),
-      title: newTask.title,
-      location: newTask.location || undefined,
-      category: newTask.category || undefined,
-      tag: newTask.tag || undefined,
-      completed: false,
-      project: newTask.project || undefined,
-      dueDate: newTask.dueDate || undefined,
-      dueTime: newTask.dueTime || undefined
-    };
-    
-    setTasks([...tasks, newTaskItem]);
-    
-    if (newTask.project) {
-      setProjects(projects.map(project => 
-        project.id === newTask.project 
-          ? { ...project, count: project.count + 1 } 
-          : project
-      ));
-    }
-    
-    setNewTask({
-      title: '',
-      location: '',
-      category: '',
-      tag: '',
-      project: '',
-      dueDate: null,
-      dueTime: ''
-    });
+    const newTaskItem: Task = { ...newTask, id: Date.now().toString(), completed: false };
+    const updatedTasks = [...tasks, newTaskItem];
+    setTasks(updatedTasks);
+    updateProjectCounts(updatedTasks);
+    setNewTask({ title: '', location: '', category: '', tag: '', project: '', dueDate: null, dueTime: '' });
     setShowAddTaskModal(false);
   };
 
   const toggleTaskCompletion = (id: string) => {
-    setTasks(tasks.map(task => 
-      task.id === id 
-        ? { ...task, completed: !task.completed } 
-        : task
-    ));
+    const updatedTasks = tasks.map(task => task.id === id ? { ...task, completed: !task.completed } : task);
+    setTasks(updatedTasks);
+    updateProjectCounts(updatedTasks);
   };
 
   const deleteTask = (id: string) => {
-    const taskToDelete = tasks.find(task => task.id === id);
-    setTasks(tasks.filter(task => task.id !== id));
-    
-    if (taskToDelete?.project) {
-      setProjects(projects.map(project => 
-        project.id === taskToDelete.project 
-          ? { ...project, count: project.count - 1 } 
-          : project
-      ));
-    }
-    
+    const updatedTasks = tasks.filter(task => task.id !== id);
+    setTasks(updatedTasks);
+    updateProjectCounts(updatedTasks);
     setShowTaskMenu(null);
   };
 

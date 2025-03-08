@@ -212,22 +212,16 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
               className="px-2 py-1 text-xs border border-gray-300 rounded-full text-gray-500 hover:bg-gray-100"
               onClick={() => setShowCalendar(prev => !prev)}
             >
-              ⏰ {selectedDate ? selectedDate.toLocaleDateString() : 'Set Date & Time'}
+              ⏱ {selectedDate ? selectedDate.toLocaleDateString() : 'Set Date & Time'}
             </button>
             
             <button 
               className={`px-2 py-1 text-xs border ${newTask.project ? 'border-blue-300 bg-blue-50' : 'border-gray-300'} rounded-full text-gray-500 hover:bg-gray-100`}
               onClick={() => setShowProjectSelector(prev => !prev)}
             >
-              📌 {newTask.project ? projects.find(p => p.id === newTask.project)?.name || 'Project' : 'Project'}
+              📎 {newTask.project ? projects.find(p => p.id === newTask.project)?.name || 'Project' : 'Project'}
             </button>
             
-            <button 
-              className="px-2 py-1 text-xs border border-gray-300 rounded-full text-gray-500 hover:bg-gray-100"
-              onClick={() => {/* Add tag selection functionality */}}
-            >
-              🏷️ Tags
-            </button>
           </div>
           
           {showProjectSelector && (
