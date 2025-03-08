@@ -23,6 +23,7 @@ interface SidebarProps {
   completedTasksCount: number;
   totalTasksCount: number;
   uncompletedTasksCount: number;
+  upcomingTasksCount: number;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ 
@@ -32,7 +33,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   setShowAddTaskModal,
   completedTasksCount,
   totalTasksCount,
-  uncompletedTasksCount
+  uncompletedTasksCount,
+  upcomingTasksCount
 }) => {
   return (
     <div className="w-60 bg-white border-r flex flex-col h-full">
@@ -100,7 +102,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           >
             <Calendar size={18} className="mr-3" />
             <span>Upcoming</span>
-            <span className="ml-auto bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-md">3</span>
+            <span className="ml-auto bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-md">{upcomingTasksCount}</span>
           </li>
           <li 
             className={`flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100 ${activeTab === 'important' ? 'bg-blue-50 text-blue-600' : 'text-gray-600'} transition-colors`}

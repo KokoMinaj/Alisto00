@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Task, Project } from '../types';
 import Sidebar from '../components/Sidebar';
@@ -7,11 +8,11 @@ import TaskList from '../components/dashboard/TaskList';
 
 const Dashboard: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([
-    { id: '1', title: 'Buy Cat Food', location: 'Loc: Consolacion', tag: 'Home', completed: false, project: 'home' },
-    { id: '2', title: 'Visit Mr. DIY Ayala', category: 'Home Supplies', tag: 'Home', completed: false, project: 'home' },
-    { id: '3', title: 'Review CAO', category: 'Long Quiz F2F', tag: 'School', completed: false, project: 'school' },
+    { id: '1', title: 'Buy Cat Food', location: 'Loc: Consolacion', tag: 'Home', completed: false, project: 'home', dueDate: new Date(Date.now() + 86400000) }, // Tomorrow
+    { id: '2', title: 'Visit Mr. DIY Ayala', category: 'Home Supplies', tag: 'Home', completed: false, project: 'home', dueDate: new Date(Date.now() + 172800000) }, // Day after tomorrow
+    { id: '3', title: 'Review CAO', category: 'Long Quiz F2F', tag: 'School', completed: false, project: 'school', dueDate: new Date(Date.now() + 345600000) }, // 4 days from now
     { id: '4', title: 'Article(s) for Algo 2', category: 'Long Quiz F2F', tag: 'School', completed: false, project: 'school' },
-    { id: '5', title: 'Call John', tag: 'Friends', completed: false, project: 'friends' },
+    { id: '5', title: 'Call John', tag: 'Friends', completed: false, project: 'friends', dueDate: new Date(Date.now() + 86400000) }, // Tomorrow
     { id: '6', title: 'Check emails', tag: 'Random', completed: false, project: 'random' },
   ]);
 
@@ -39,6 +40,22 @@ const Dashboard: React.FC = () => {
   const completedTasksCount = tasks.filter(task => task.completed).length;
   const totalTasksCount = tasks.length;
   const uncompletedTasksCount = totalTasksCount - completedTasksCount;
+  
+  // Get upcoming tasks count (tasks with due dates in the next 7 days)
+  const upcomingTasksCount = tasks.filter(task => {
+    if (!task.dueDate) return false;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const dueDate = new Date(task.dueDate);
+    dueDate.setHours(0, 0, 0, 0);
+    
+    const diffTime = dueDate.getTime() - today.getTime();
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+    
+    return diffDays > 0 && diffDays <= 7 && !task.completed;
+  }).length;
 
   const getFilteredTasks = () => {
     let filtered = tasks;
@@ -55,8 +72,35 @@ const Dashboard: React.FC = () => {
     switch (activeTab) {
       case 'inbox':
         return filtered;
-      case 'today':
-        return filtered;
+      case 'today': {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        return filtered.filter(task => {
+          if (!task.dueDate) return false;
+          
+          const dueDate = new Date(task.dueDate);
+          dueDate.setHours(0, 0, 0, 0);
+          
+          return dueDate.getTime() === today.getTime();
+        });
+      }
+      case 'upcoming': {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        return filtered.filter(task => {
+          if (!task.dueDate) return false;
+          
+          const dueDate = new Date(task.dueDate);
+          dueDate.setHours(0, 0, 0, 0);
+          
+          const diffTime = dueDate.getTime() - today.getTime();
+          const diffDays = diffTime / (1000 * 60 * 60 * 24);
+          
+          return diffDays > 0 && diffDays <= 7;
+        });
+      }
       case 'completed':
         return filtered.filter(task => task.completed);
       case 'important':
@@ -140,6 +184,7 @@ const Dashboard: React.FC = () => {
         completedTasksCount={completedTasksCount}
         totalTasksCount={totalTasksCount}
         uncompletedTasksCount={uncompletedTasksCount}
+        upcomingTasksCount={upcomingTasksCount}
       />
 
       <div className="flex-1 flex flex-col bg-white">
