@@ -94,7 +94,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           >
             <LayoutDashboard size={18} className="mr-3" />
             <span>Today</span>
-            <span className="ml-auto bg-blue-100 text-blue-600 text-xs px-2 py-0.5 rounded-md">{uncompletedTasksCount}</span>
+            <span className="ml-auto bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-md">{uncompletedTasksCount}</span>
           </li>
           <li 
             className={`flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100 ${activeTab === 'upcoming' ? 'bg-blue-50 text-blue-600' : 'text-gray-600'} transition-colors`}
@@ -110,7 +110,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           >
             <Star size={18} className="mr-3" />
             <span>Important</span>
-            <span className="ml-auto bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-md">2</span>
+            <span className="ml-auto bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-md">0</span>
           </li>
           <li 
             className={`flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100 ${activeTab === 'completed' ? 'bg-blue-50 text-blue-600' : 'text-gray-600'} transition-colors`}
