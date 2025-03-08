@@ -1,4 +1,3 @@
-
 export interface Task {
   id: string;
   title: string;
@@ -7,6 +6,8 @@ export interface Task {
   tag?: string;
   completed: boolean;
   project?: string;
+  dueDate?: Date;
+  dueTime?: string;
 }
 
 export interface Project {

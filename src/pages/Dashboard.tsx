@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Task, Project } from '../types';
 import Sidebar from '../components/Sidebar';
@@ -29,7 +28,9 @@ const Dashboard: React.FC = () => {
     location: '',
     category: '',
     tag: '',
-    project: ''
+    project: '',
+    dueDate: null as Date | null,
+    dueTime: ''
   });
   const [showAddTaskModal, setShowAddTaskModal] = useState(false);
   const [showTaskMenu, setShowTaskMenu] = useState<string | null>(null);
@@ -79,7 +80,9 @@ const Dashboard: React.FC = () => {
       category: newTask.category || undefined,
       tag: newTask.tag || undefined,
       completed: false,
-      project: newTask.project || undefined
+      project: newTask.project || undefined,
+      dueDate: newTask.dueDate || undefined,
+      dueTime: newTask.dueTime || undefined
     };
     
     setTasks([...tasks, newTaskItem]);
@@ -97,7 +100,9 @@ const Dashboard: React.FC = () => {
       location: '',
       category: '',
       tag: '',
-      project: ''
+      project: '',
+      dueDate: null,
+      dueTime: ''
     });
     setShowAddTaskModal(false);
   };
