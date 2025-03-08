@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { X, Calendar as CalendarIcon, ChevronLeft, ChevronRight, ChevronUp, ChevronDown } from 'lucide-react';
+import { X, Calendar as CalendarIcon, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Hash } from 'lucide-react';
 import { Project } from '../types';
 import { cn } from '@/lib/utils';
 
@@ -42,6 +41,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [showMonthDropdown, setShowMonthDropdown] = useState(false);
   const [showYearDropdown, setShowYearDropdown] = useState(false);
+  const [showProjectSelector, setShowProjectSelector] = useState(false);
 
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const years = [2024, 2025, 2026, 2027, 2028];
@@ -54,7 +54,6 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
   
   const getFirstDayOfMonth = (year: number, month: number) => {
     let firstDay = new Date(year, month, 1).getDay();
-    // Adjust for Monday as first day (0 is Monday, 6 is Sunday)
     return firstDay === 0 ? 6 : firstDay - 1;
   };
   
@@ -62,7 +61,6 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
     const daysInMonth = getDaysInMonth(currentYear, currentMonth);
     const firstDay = getFirstDayOfMonth(currentYear, currentMonth);
     
-    // Get days from previous month
     const daysInPrevMonth = getDaysInMonth(
       currentMonth === 0 ? currentYear - 1 : currentYear, 
       currentMonth === 0 ? 11 : currentMonth - 1
@@ -70,7 +68,6 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
     
     const calendarDays = [];
     
-    // Add days from previous month
     for (let i = firstDay - 1; i >= 0; i--) {
       calendarDays.push({
         day: daysInPrevMonth - i,
@@ -79,7 +76,6 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
       });
     }
     
-    // Add days from current month
     for (let i = 1; i <= daysInMonth; i++) {
       calendarDays.push({
         day: i,
@@ -89,7 +85,6 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
       });
     }
     
-    // Add days from next month
     const remainingCells = 42 - calendarDays.length;
     for (let i = 1; i <= remainingCells; i++) {
       calendarDays.push({
@@ -177,6 +172,11 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
     return `${hour}:${minute.toString().padStart(2, '0')} ${period}`;
   };
 
+  const handleProjectSelect = (projectId: string) => {
+    setNewTask({...newTask, project: projectId});
+    setShowProjectSelector(false);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 animate-in fade-in-50 zoom-in-95">
@@ -216,10 +216,10 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
             </button>
             
             <button 
-              className="px-2 py-1 text-xs border border-gray-300 rounded-full text-gray-500 hover:bg-gray-100"
-              onClick={() => {/* Add project selection functionality */}}
+              className={`px-2 py-1 text-xs border ${newTask.project ? 'border-blue-300 bg-blue-50' : 'border-gray-300'} rounded-full text-gray-500 hover:bg-gray-100`}
+              onClick={() => setShowProjectSelector(prev => !prev)}
             >
-              📌 Project
+              📌 {newTask.project ? projects.find(p => p.id === newTask.project)?.name || 'Project' : 'Project'}
             </button>
             
             <button 
@@ -229,6 +229,27 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
               🏷️ Tags
             </button>
           </div>
+          
+          {showProjectSelector && (
+            <div className="mt-4 border border-gray-100 rounded-lg shadow-sm">
+              <div className="p-4 bg-white rounded-lg">
+                <h3 className="text-sm font-medium mb-2">My Projects</h3>
+                
+                <div className="space-y-2">
+                  {projects.map(project => (
+                    <div 
+                      key={project.id}
+                      className={`flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100 ${newTask.project === project.id ? 'bg-blue-50 text-blue-600' : 'text-gray-600'}`}
+                      onClick={() => handleProjectSelect(project.id)}
+                    >
+                      <Hash size={16} className="mr-2 text-gray-500" />
+                      <span>{project.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
           
           {showCalendar && (
             <div className="mt-4 border border-gray-100 rounded-lg shadow-sm">
