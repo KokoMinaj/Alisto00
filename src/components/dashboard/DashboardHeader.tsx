@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Search, Bell, User, LogOut } from 'lucide-react';
+import { Search, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../../hooks/use-toast';
 
@@ -37,15 +37,8 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     }
   };
 
-  const handleLogout = () => {
-    toast({
-      title: "Logging out",
-      description: "You have been successfully logged out",
-    });
-    
-    setTimeout(() => {
-      navigate('/login');
-    }, 1000);
+  const handleProfileClick = () => {
+    navigate('/settings');
   };
 
   return (
@@ -67,16 +60,10 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           />
         </div>
         
-        {/* Notifications */}
-        <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors relative">
-          <Bell size={20} className="text-gray-600" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-        </button>
-        
-        {/* User */}
+        {/* User - now redirects to settings when clicked */}
         <button 
           className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
-          onClick={handleLogout}
+          onClick={handleProfileClick}
         >
           <User size={18} className="text-gray-600" />
         </button>
