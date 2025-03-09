@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { X, Calendar as CalendarIcon, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Hash, Star } from 'lucide-react';
 import { Project } from '../types';
@@ -219,6 +218,22 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
     const { hour, minute, period } = selectedTime;
     return `${hour}:${minute.toString().padStart(2, '0')} ${period}`;
   };
+  
+  // Function to get the display name for project IDs
+  const getDisplayName = (projectId: string) => {
+    switch (projectId) {
+      case 'school':
+        return 'School';
+      case 'home':
+        return 'Home';
+      case 'random':
+        return 'Random';
+      case 'friends':
+        return 'Friends';
+      default:
+        return projectId;
+    }
+  };
 
   const handleProjectSelect = (projectId: string) => {
     setNewTask({...newTask, project: projectId});
@@ -284,7 +299,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
               onClick={() => setShowProjectSelector(prev => !prev)}
             >
               <Hash size={16} />
-              {newTask.project ? projects.find(p => p.id === newTask.project)?.name || 'Project' : 'Project'}
+              {newTask.project ? `#${getDisplayName(newTask.project)}` : 'Project'}
             </button>
             
             <button 
@@ -310,7 +325,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
                       onClick={() => handleProjectSelect(project.id)}
                     >
                       <Hash size={16} className="mr-2 text-gray-500" />
-                      <span>{project.name}</span>
+                      <span>#{getDisplayName(project.id)}</span>
                     </div>
                   ))}
                 </div>
