@@ -66,12 +66,10 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
   const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i);
   const daysOfWeek = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
   
-  // Update selectedDate when newTask.dueDate changes
   useEffect(() => {
     setSelectedDate(newTask.dueDate);
   }, [newTask.dueDate]);
   
-  // Update newTask when selectedDate or selectedTime changes
   useEffect(() => {
     if (selectedDate) {
       setNewTask(prev => ({
@@ -102,7 +100,6 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
     
     const calendarDays = [];
     
-    // Previous month days
     for (let i = firstDay - 1; i >= 0; i--) {
       calendarDays.push({
         day: daysInPrevMonth - i,
@@ -111,7 +108,6 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
       });
     }
     
-    // Current month days
     for (let i = 1; i <= daysInMonth; i++) {
       calendarDays.push({
         day: i,
@@ -121,7 +117,6 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
       });
     }
     
-    // Next month days
     const remainingCells = 42 - calendarDays.length;
     for (let i = 1; i <= remainingCells; i++) {
       calendarDays.push({
@@ -219,7 +214,6 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
     return `${hour}:${minute.toString().padStart(2, '0')} ${period}`;
   };
   
-  // Function to get the display name for project IDs
   const getDisplayName = (projectId: string) => {
     switch (projectId) {
       case 'school':

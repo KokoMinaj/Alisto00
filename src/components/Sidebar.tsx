@@ -52,22 +52,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     }, 1000);
   };
 
-  // Map the project names to our desired display names
-  const getDisplayName = (projectId: string) => {
-    switch (projectId) {
-      case 'work':
-        return 'School';
-      case 'personal':
-        return 'Home';
-      case 'education':
-        return 'Random';
-      case 'health':
-        return 'Friends';
-      default:
-        return projectId;
-    }
-  };
-
   return (
     <div className="w-64 bg-white border-r flex flex-col h-full shadow-sm overflow-hidden animate-fade-in">
       {/* Logo and User */}
@@ -166,7 +150,10 @@ const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => setActiveTab(`project-${project.id}`)}
             >
               <Hash size={18} className="mr-3" />
-              <span>#{getDisplayName(project.id)}</span>
+              <span>#{project.id === 'school' ? 'School' : 
+                     project.id === 'home' ? 'Home' : 
+                     project.id === 'random' ? 'Random' : 
+                     project.id === 'friends' ? 'Friends' : project.id}</span>
               <span className={`ml-auto bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-md ${activeTab === `project-${project.id}` ? 'bg-blue-100 text-blue-600' : ''}`}>
                 {project.count}
               </span>

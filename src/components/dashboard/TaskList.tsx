@@ -47,8 +47,18 @@ const TaskList: React.FC<TaskListProps> = ({
   const groupedTasks = getGroupedTasks();
   
   const getProjectName = (projectId: string) => {
-    const project = projects.find(p => p.id === projectId);
-    return project ? project.name : 'Unknown Project';
+    switch (projectId) {
+      case 'school':
+        return 'School';
+      case 'home':
+        return 'Home';
+      case 'random':
+        return 'Random';
+      case 'friends':
+        return 'Friends';
+      default:
+        return 'Unknown Project';
+    }
   };
   
   const formatDate = (date: Date) => {
