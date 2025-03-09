@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Calendar, 
@@ -12,7 +13,6 @@ import {
   LogOut
 } from 'lucide-react';
 import { Project } from '../types';
-import { useNavigate } from 'react-router-dom';
 import { useToast } from '../hooks/use-toast';
 
 interface SidebarProps {
@@ -75,8 +75,8 @@ const Sidebar: React.FC<SidebarProps> = ({
             <span>U</span>
           </div>
           <div className="ml-3">
-            <div className="text-sm font-medium">User</div>
-            <div className="text-xs text-gray-500">{completedTasksCount}/{totalTasksCount} Tasks</div>
+            <div className="text-sm font-medium">KazutoKei03</div>
+            <div className="text-xs text-gray-500">{completedTasksCount}/{totalTasksCount} Tasks Done</div>
           </div>
         </div>
         <ChevronDown size={16} className="text-gray-400" />

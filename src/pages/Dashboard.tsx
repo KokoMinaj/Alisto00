@@ -5,7 +5,7 @@ import Sidebar from '../components/Sidebar';
 import AddTaskModal from '../components/AddTaskModal';
 import DashboardHeader from '../components/dashboard/DashboardHeader';
 import TaskList from '../components/dashboard/TaskList';
-import { toast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 const Dashboard: React.FC = () => {
   // Get tasks and projects from localStorage or use default values
@@ -20,10 +20,10 @@ const Dashboard: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>(() => {
     const savedProjects = localStorage.getItem('projects');
     return savedProjects ? JSON.parse(savedProjects) : [
-      { id: 'work', name: 'Work', count: 0 },
-      { id: 'personal', name: 'Personal', count: 0 },
-      { id: 'education', name: 'Education', count: 0 },
-      { id: 'health', name: 'Health', count: 0 },
+      { id: 'school', name: 'School', count: 0 },
+      { id: 'home', name: 'Home', count: 0 },
+      { id: 'random', name: 'Random', count: 0 },
+      { id: 'friends', name: 'Friends', count: 0 },
     ];
   });
   
@@ -44,6 +44,7 @@ const Dashboard: React.FC = () => {
   const [showAddTaskModal, setShowAddTaskModal] = useState(false);
   const [showTaskMenu, setShowTaskMenu] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const { toast } = useToast();
 
   // Calculate task statistics
   const completedTasksCount = tasks.filter(task => task.completed).length;
