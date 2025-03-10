@@ -58,7 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       <div className="p-4 border-b flex justify-between items-center">
         <Link to="/" className="inline-block">
           <img 
-            src="public/lovable-uploads/63df3104-6ba2-4cb4-9bdd-ba177135b94b.png" 
+            src="public/lovable-uploads/7212e255-86b8-4a8a-b5c6-a42d97eb6270.png" 
             alt="AListo Logo" 
             className="h-10 hover:scale-105 transition-transform"
           />
