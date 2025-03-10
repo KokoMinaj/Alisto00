@@ -56,11 +56,11 @@ const Sidebar: React.FC<SidebarProps> = ({
     <div className="w-64 bg-white border-r flex flex-col h-full shadow-sm overflow-hidden animate-fade-in">
       {/* Logo and User */}
       <div className="p-4 border-b flex justify-between items-center">
-        <Link to="/" className="inline-block">
+        <Link to="/" className="inline-block flex-1">
           <img 
             src="public/lovable-uploads/7212e255-86b8-4a8a-b5c6-a42d97eb6270.png" 
             alt="AListo Logo" 
-            className="h-10 hover:scale-105 transition-transform"
+            className="h-12 w-auto hover:scale-105 transition-transform" 
           />
         </Link>
         <button className="text-gray-400 hover:text-gray-600 transition-colors">
