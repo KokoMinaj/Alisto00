@@ -56,16 +56,13 @@ const Sidebar: React.FC<SidebarProps> = ({
     <div className="w-64 bg-white border-r flex flex-col h-full shadow-sm overflow-hidden animate-fade-in">
       {/* Logo and User */}
       <div className="p-4 border-b flex justify-between items-center">
-        <span className="font-bold text-2xl flex items-center">
-          <span>
-            <Link to="/" className="inline-block">
-              <img src='favicon.webp' className='w-12 h-12 mr-2 hover:scale-105' alt="Logo" />
-            </Link>
-          </span>
-          <span className="text-black">A</span>
-          <span className="text-black">L</span>
-          <span className="text-primary">istō</span>
-        </span>
+        <Link to="/" className="inline-block">
+          <img 
+            src="public/lovable-uploads/63df3104-6ba2-4cb4-9bdd-ba177135b94b.png" 
+            alt="AListo Logo" 
+            className="h-10 hover:scale-105 transition-transform"
+          />
+        </Link>
         <button className="text-gray-400 hover:text-gray-600 transition-colors">
           <Menu size={20} />
         </button>
