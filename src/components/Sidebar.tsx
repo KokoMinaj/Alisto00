@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Calendar, 
@@ -56,13 +56,16 @@ const Sidebar: React.FC<SidebarProps> = ({
     <div className="w-64 bg-white border-r flex flex-col h-full shadow-sm overflow-hidden animate-fade-in">
       {/* Logo and User */}
       <div className="p-4 border-b flex justify-between items-center">
-        <div className="flex items-center">
-          <span className="font-bold text-2xl flex items-center">
-            <span className="text-primary">A</span>
-            <span className="text-green-500">L</span>
-            <span className="text-primary">istō</span>
+        <span className="font-bold text-2xl flex items-center">
+          <span>
+            <Link to="/" className="inline-block">
+              <img src='favicon.webp' className='w-12 h-12 mr-2 hover:scale-105' alt="Logo" />
+            </Link>
           </span>
-        </div>
+          <span className="text-black">A</span>
+          <span className="text-black">L</span>
+          <span className="text-primary">istō</span>
+        </span>
         <button className="text-gray-400 hover:text-gray-600 transition-colors">
           <Menu size={20} />
         </button>
